@@ -2,6 +2,55 @@
 
 Мини-сервис для учёта инцидентов (создание, просмотр, изменение статуса) с REST API на FastAPI + PostgreSQL.
 
+## Контакты
+
+- Telegram: [t.me/thefoxdk](https://t.me/thefoxdk)
+- Email: [krishtopadenis@gmail.com](mailto:krishtopadenis@gmail.com)
+
+## Содержание
+
+- [Контакты](#контакты)
+- [Запуск](#запуск-docker-compose)
+- [Стек](#стек)
+- [Make-команды](#make-команды)
+- [Конфигурация окружения](#конфигурация-окружения-env)
+- [Миграции БД](#миграции-бд-alembic)
+- [Эндпоинты и примеры](#эндпоинты-и-примеры)
+- [Структура проекта](#структура-проекта)
+- [Логи](#логи)
+- [Примечания](#примечания)
+
+## Запуск (Docker Compose)
+
+```bash
+cp .env.example .env
+```
+
+```bash
+make build
+```
+
+При первом запуске необходимо выполнить миграции:
+```bash
+make migrate
+```
+
+```bash
+make up
+```
+
+После старта:
+
+- API: <http://localhost:8000>
+- Swagger UI: <http://localhost:8000/docs>
+- Health: `GET /healthz`
+
+Остановка:
+
+```bash
+make down
+```
+
 ## Стек
 
 - Python 3.14, FastAPI, SQLAlchemy 2.x, Alembic
@@ -10,49 +59,22 @@
 - Structlog (структурированные логи)
 - Docker, Docker Compose, Makefile, uv
 
-## Запуск (Docker Compose)
-
-```bash
-cp .env.example .env
-make build
-make up
-```
-
-После старта:
-- API доступен на <http://localhost:8000>
-- Swagger UI: <http://localhost:8000/docs>
-- Health-check: `GET http://localhost:8000/healthz`
-
-Остановить сервисы:
-
-```bash
-make down
-```
-
-### Полезные make-цели
+## Make-команды
 
 | Команда | Описание |
 | --- | --- |
 | `make build` | Сборка образов |
 | `make up` | Поднять стек (api + postgres) |
 | `make down` | Остановить/удалить сервисы |
-| `make logs` | Тейлить логи API |
-| `make format` | `ruff format` внутри контейнера |
-| `make lint` | `ruff check` + `mypy` |
-| `make test` | `pytest` |
 | `make makemigrations name="add_feature"` | Alembic revision (autogenerate) |
 | `make migrate` | Alembic upgrade head |
 | `make shell` | Bash внутри контейнера API |
 
-## Конфигурация окружения
+## Конфигурация окружения (.env)
 
-Переменные задаются через `.env` / env vars (см. `.env.example`). Базовые значения:
-
-```
+```text
 APP_SERVICE_NAME=incidentor
 APP_ENVIRONMENT=development
-APP_HOST=0.0.0.0
-APP_PORT=8000
 
 POSTGRES_HOST=db
 POSTGRES_PORT=5432
@@ -66,27 +88,28 @@ DB_POOL_TIMEOUT=30
 DB_POOL_RECYCLE=1800
 ```
 
-## Миграции БД
+## Миграции БД (Alembic)
 
 ```bash
 make makemigrations name="init"
+```
+
+```bash
 make migrate
 ```
 
-Первичная миграция уже создана: `alembic/versions/0001_initial_incidents.py`.
+Автогенерация создаст файл в `alembic/versions/` на основе текущих моделей.
 
-## Эндпоинты
+## Эндпоинты и примеры
 
 | Метод | Путь | Описание |
 | --- | --- | --- |
-| `GET /healthz` | | Проверка доступности БД |
-| `POST /api/v1/incidents` | | Создать инцидент |
-| `GET /api/v1/incidents?status=new` | | Список инцидентов (фильтр по статусу) |
-| `PATCH /api/v1/incidents/{id}` | | Обновить статус инцидента |
+| GET | /healthz` |  Проверка доступности БД |
+| POST | /api/v1/incidents` | Создать инцидент |
+| GET | /api/v1/incidents?status=new` | Список инцидентов (фильтр по статусу) |
+| PATCH | /api/v1/incidents/{id}` | Обновить статус инцидента |
 
-### Примеры запросов
-
-Создание инцидента:
+Создание:
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/incidents \
@@ -108,17 +131,9 @@ curl -X PATCH http://localhost:8000/api/v1/incidents/{id} \
 curl "http://localhost:8000/api/v1/incidents?status=new"
 ```
 
-## Тестирование
-
-```bash
-make test
-```
-
-(Пока тесты не добавлены — цель зарезервирована.)
-
 ## Структура проекта
 
-```
+```text
 src/
   api/                # FastAPI роутеры и endpoints
   core/               # Настройки, DI, логирование, lifespan
@@ -135,9 +150,10 @@ Makefile
 
 ## Логи
 
-Структурированные JSON-логи через structlog со следующими ключами: `timestamp`, `level`, `service`, `environment`, `event`, `module`, `exc_info` (при ошибках).
+Структурированные JSON-логи через structlog со следующими ключами:
+`timestamp`, `level`, `service`, `environment`, `event`, `module`, `exc_info` (при ошибках).
 
-## Дополнительно
+## Примечания
 
 - DI управляется через Dishka (`src/core/dependencies.py`).
-- Конфигурация `ruff` и `mypy` находится в `pyproject.toml` (`select = ["ALL"]` специально для строгой статики — при необходимости скорректируйте под проект).
+- Конфигурация `ruff`/`mypy` в `pyproject.toml`
