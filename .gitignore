@@ -1,0 +1,71 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+
+# Byte-compiled / cache
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+.coverage
+htmlcov/
+
+# IDE / Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+
+# Database
+*.db
+*.sqlite3
+
+# Alembic
+alembic/__pycache__/
+alembic/versions/__pycache__/
+alembic/versions/*.pyc
+
+# Docker
+*.pid
+*.log
+docker-compose.override.yml
+**/logs/
+**/tmp/
+**/data/
+
+# Build / Distribution
+build/
+dist/
+*.egg
+*.whl
+
+# Tests
+.tox/
+nosetests.xml
+test-results/
+coverage.xml
+.pytest_cache/
