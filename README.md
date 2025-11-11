@@ -7,6 +7,12 @@
 - Telegram: [t.me/thefoxdk](https://t.me/thefoxdk)
 - Email: [krishtopadenis@gmail.com](mailto:krishtopadenis@gmail.com)
 
+## Демо-ролик
+
+https://github.com/user-attachments/assets/b06a9cff-e36a-4b89-aeb2-b176f90ba8ae
+
+
+
 ## Содержание
 
 - [Контакты](#контакты)
